@@ -3,9 +3,9 @@ import { FaUser } from 'react-icons/fa'
 
 import { ROUTES } from '@/config/pages.config'
 
-import { CartIcon } from './CartIcon'
-import { IconButton } from './IconButton'
-import { SearchBar } from './SearchBar'
+import { CartIcon } from '../other/CartIcon'
+import { IconButton } from '../other/IconButton'
+import { SearchBar } from '../other/SearchBar'
 
 export const HeaderActions = () => {
 	return (

@@ -6,6 +6,8 @@
 }
 
 @theme inline {
+	--color-red: #7d1b08;
+	--color-green: #2d7d08;
 	--color-accent: #9e9e9e;
 	--color-icons: #ffffff;
 	--color-divider: #bdbdbd;

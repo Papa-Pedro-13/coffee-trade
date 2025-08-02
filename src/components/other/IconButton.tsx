@@ -25,7 +25,6 @@ export const IconButton = React.forwardRef<HTMLAnchorElement | HTMLButtonElement
 	({ Icon, className = '', children, ...restProps }, ref) => {
 		const combinedClasses = `p-1.5 sm:p-2 rounded-full text-primary bg-light-primary hover:bg-divider hover:text-dark-primary transition-colors duration-300 block ${className}`
 
-		// Если есть href - рендерим как ссылку
 		if ('href' in restProps && restProps.href !== undefined) {
 			const { href, ...linkProps } = restProps as LinkButtonProps
 
@@ -42,7 +41,6 @@ export const IconButton = React.forwardRef<HTMLAnchorElement | HTMLButtonElement
 			)
 		}
 
-		// Если нет href - рендерим как кнопку
 		return (
 			<button
 				ref={ref as ForwardedRef<HTMLButtonElement>}

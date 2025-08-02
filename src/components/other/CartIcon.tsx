@@ -28,7 +28,7 @@ export const CartIcon = () => {
 				onMouseLeave={() => setIsHovered(false)}
 			>
 				{totalItems > 0 && (
-					<span className="absolute -top-1.5 -right-1 flex items-center justify-center w-5 h-5 rounded-full bg-dark-primary text-icons text-xs font-bold">
+					<span className="absolute -top-1.5 -right-1 flex items-center justify-center w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-dark-primary text-icons text-xs font-bold">
 						{totalItems}
 					</span>
 				)}
