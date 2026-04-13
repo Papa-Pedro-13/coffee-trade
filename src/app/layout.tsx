@@ -1,8 +1,13 @@
-import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 
-import './globals.css'
 import { Header } from '@/components'
+
+import StoreProvider from './storeProvider'
+
+import type { Metadata, Viewport } from 'next'
+
+import './globals.css'
+import { Bounce, ToastContainer } from 'react-toastify'
 
 const inter = Inter({
 	variable: '--font-inter',
@@ -10,8 +15,18 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-	title: 'Coffe Dynamo',
+	title: 'Coffee Dynamo',
 	description: 'Кофейня, где ценами управляешь ты!',
+	icons: {
+		icon: '/favicon.png',
+	},
+}
+
+export const viewport: Viewport = {
+	themeColor: '#ffffff',
+	width: 'device-width',
+	initialScale: 1,
+	maximumScale: 1,
 }
 
 export default function RootLayout({
@@ -20,11 +35,25 @@ export default function RootLayout({
 	children: React.ReactNode
 }>) {
 	return (
-		<html lang="en">
-			<link rel="icon" href="/favicon.png" sizes="any" />
-			<body className={`${inter.variable} antialiased`}>
-				<Header />
-				{children}
+		<html lang="ru" className={inter.variable}>
+			<body className="antialiased bg-gray-50 text-gray-900">
+				<StoreProvider>
+					<Header />
+					<main className="min-h-screen">{children}</main>
+					<ToastContainer
+						position="bottom-center"
+						autoClose={5000}
+						hideProgressBar={false}
+						newestOnTop={false}
+						closeOnClick={false}
+						rtl={false}
+						pauseOnFocusLoss
+						draggable
+						pauseOnHover
+						theme="light"
+						transition={Bounce}
+					/>
+				</StoreProvider>
 			</body>
 		</html>
 	)

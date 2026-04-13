@@ -16,6 +16,7 @@ const eslintConfig = [
 		'next/typescript',
 		'plugin:prettier/recommended',
 		'plugin:import/recommended',
+		'plugin:import/typescript',
 	),
 	{
 		rules: {
@@ -23,7 +24,34 @@ const eslintConfig = [
 			'import/order': [
 				'error',
 				{
-					groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+					groups: [
+						'builtin',
+						'external',
+						'internal',
+						'parent',
+						'sibling',
+						'index',
+						'object',
+						'type',
+					],
+					pathGroups: [
+						{
+							pattern: '@//**',
+							group: 'internal',
+							position: 'before',
+						},
+						{
+							pattern: './**/*.{css,scss,less}',
+							group: 'index',
+							position: 'after',
+						},
+						{
+							pattern: '**/*.{css,scss,less}',
+							group: 'index',
+							position: 'after',
+						},
+					],
+					pathGroupsExcludedImportTypes: ['type'],
 					'newlines-between': 'always',
 					alphabetize: { order: 'asc', caseInsensitive: true },
 				},
@@ -37,6 +65,13 @@ const eslintConfig = [
 			'arrow-parens': 'off',
 
 			'no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0 }],
+		},
+		settings: {
+			'import/resolver': {
+				typescript: {
+					alwaysTryTypes: true,
+				},
+			},
 		},
 	},
 ]
