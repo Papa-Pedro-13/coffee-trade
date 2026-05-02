@@ -1,11 +1,10 @@
 import { User } from '@/shared/types'
-import { setCredentials } from '@/store/auth'
+import { logout, setCredentials, setUser } from '@/store/auth'
 
 import { baseApi } from '../base.api'
 
 interface AuthResponse {
-	user: User
-	token: string
+	accessToken: string
 }
 
 interface LoginRequest {
@@ -15,8 +14,19 @@ interface LoginRequest {
 
 export const authApi = baseApi.injectEndpoints({
 	endpoints: builder => ({
-		getMe: builder.query({
+		getMe: builder.query<User, void>({
 			query: () => '/auth/me',
+			providesTags: ['User'],
+
+			async onQueryStarted(_, { dispatch, queryFulfilled }) {
+				try {
+					const { data } = await queryFulfilled
+
+					dispatch(setUser(data))
+				} catch {
+					dispatch(logout())
+				}
+			},
 		}),
 		login: builder.mutation<AuthResponse, LoginRequest>({
 			query: credentials => ({
@@ -24,13 +34,32 @@ export const authApi = baseApi.injectEndpoints({
 				method: 'POST',
 				body: credentials,
 			}),
+			invalidatesTags: ['User'],
 			// Автоматически обновляем слайс после успешного входа
 			async onQueryStarted(_, { dispatch, queryFulfilled }) {
 				try {
 					const { data } = await queryFulfilled
-					dispatch(setCredentials({ user: data.user, token: data.token }))
+					console.log(data)
+					dispatch(setCredentials({ token: data.accessToken }))
 				} catch {
 					console.log('Ошибка авторизации')
+				}
+			},
+		}),
+		refresh: builder.mutation<AuthResponse, void>({
+			query: () => ({
+				url: '/auth/refresh',
+				method: 'POST',
+			}),
+
+			async onQueryStarted(_, { dispatch, queryFulfilled }) {
+				try {
+					const { data } = await queryFulfilled
+
+					dispatch(setCredentials({ token: data.accessToken }))
+				} catch {
+					dispatch(logout())
+					console.log('Ошибка обновления токена')
 				}
 			},
 		}),
@@ -40,8 +69,9 @@ export const authApi = baseApi.injectEndpoints({
 				method: 'POST',
 				body: newUser,
 			}),
+			invalidatesTags: ['User'],
 		}),
 	}),
 })
 
-export const { useLoginMutation, useRegisterMutation } = authApi
+export const { useLoginMutation, useRegisterMutation, useGetMeQuery, useRefreshMutation } = authApi

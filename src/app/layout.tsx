@@ -1,13 +1,14 @@
 import { Inter } from 'next/font/google'
+import { Bounce, ToastContainer } from 'react-toastify'
 
 import { Header } from '@/components'
 
+import AuthProvider from './authProvider'
 import StoreProvider from './storeProvider'
 
 import type { Metadata, Viewport } from 'next'
 
 import './globals.css'
-import { Bounce, ToastContainer } from 'react-toastify'
 
 const inter = Inter({
 	variable: '--font-inter',
@@ -38,21 +39,23 @@ export default function RootLayout({
 		<html lang="ru" className={inter.variable}>
 			<body className="antialiased bg-gray-50 text-gray-900">
 				<StoreProvider>
-					<Header />
-					<main className="min-h-screen">{children}</main>
-					<ToastContainer
-						position="bottom-center"
-						autoClose={5000}
-						hideProgressBar={false}
-						newestOnTop={false}
-						closeOnClick={false}
-						rtl={false}
-						pauseOnFocusLoss
-						draggable
-						pauseOnHover
-						theme="light"
-						transition={Bounce}
-					/>
+					<AuthProvider>
+						<Header />
+						<main className="min-h-screen">{children}</main>
+						<ToastContainer
+							position="bottom-center"
+							autoClose={5000}
+							hideProgressBar={false}
+							newestOnTop={false}
+							closeOnClick={false}
+							rtl={false}
+							pauseOnFocusLoss
+							draggable
+							pauseOnHover
+							theme="light"
+							transition={Bounce}
+						/>
+					</AuthProvider>
 				</StoreProvider>
 			</body>
 		</html>

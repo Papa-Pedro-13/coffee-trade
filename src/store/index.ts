@@ -3,7 +3,7 @@ import { useDispatch, useSelector, useStore } from 'react-redux'
 
 import { baseApi } from '@/api'
 
-import { authSlice } from './auth'
+import { authSlice, preloadAuthState, authStorageMiddleware } from './auth'
 
 export const makeStore = () => {
 	return configureStore({
@@ -11,7 +11,11 @@ export const makeStore = () => {
 			auth: authSlice.reducer,
 			[baseApi.reducerPath]: baseApi.reducer,
 		},
-		middleware: getDefaultMiddleware => getDefaultMiddleware().concat(baseApi.middleware),
+		preloadedState: {
+			auth: preloadAuthState(),
+		},
+		middleware: getDefaultMiddleware =>
+			getDefaultMiddleware().concat(baseApi.middleware, authStorageMiddleware),
 	})
 }
 

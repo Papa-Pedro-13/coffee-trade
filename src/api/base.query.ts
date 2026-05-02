@@ -5,7 +5,6 @@ import { logout, setCredentials } from '@/store/auth'
 
 const baseQueryWithoutReauth = fetchBaseQuery({
 	baseUrl: 'http://localhost:4000/api',
-	credentials: 'include',
 	timeout: 15000,
 	prepareHeaders: (headers, { getState }) => {
 		const token = (getState() as RootState).auth.token
@@ -27,10 +26,9 @@ export const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryE
 		const refreshResult = await baseQueryWithoutReauth('/refresh', api, extraOptions)
 
 		if (refreshResult.data) {
-			const state = api.getState() as RootState
 			const token = (refreshResult.data as { token: string }).token
 
-			api.dispatch(setCredentials({ user: state.auth.user, token }))
+			api.dispatch(setCredentials({ token }))
 
 			result = await baseQueryWithoutReauth(args, api, extraOptions)
 		} else {

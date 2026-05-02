@@ -1,13 +1,14 @@
 'use client'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
 import { useLoginMutation } from '@/api/endpoints/auth.endpoints'
-import { Input } from '@/components'
+import { Input, Spinner } from '@/components'
 import { Button } from '@/components/other/Button'
-import { useApiError } from '@/hooks'
+import { useApiError, useSession } from '@/hooks'
 import { loginDefaults, loginSchema } from '@/schemas'
 
 interface LoginForm {
@@ -15,9 +16,14 @@ interface LoginForm {
 	password: string
 }
 export default function LoginPage() {
-	const router = useRouter()
+	const [isMounted, setIsMounted] = useState(false)
+	const { isAuthenticated, isLoading: isLoadingState } = useSession()
 	const [login, { isLoading }] = useLoginMutation()
+
 	const { getErrorMessage, getFieldError } = useApiError()
+
+	const searchParams = useSearchParams()
+	const router = useRouter()
 
 	const {
 		register,
@@ -32,8 +38,12 @@ export default function LoginPage() {
 
 	const onSubmit = async (data: LoginForm) => {
 		try {
-			const result = await login(data).unwrap()
-			router.push('/')
+			await login(data)
+
+			toast.done('Вы вошли в аккаунт!')
+
+			const redirect = searchParams.get('redirect') ?? '/'
+			router.replace(redirect)
 		} catch (error) {
 			const message = getErrorMessage(error)
 
@@ -49,6 +59,22 @@ export default function LoginPage() {
 			}
 		}
 	}
+
+	console.log(isAuthenticated, isMounted, isLoadingState)
+	useEffect(() => {
+		if (isAuthenticated) {
+			router.replace('/profile')
+		} else {
+			setIsMounted(true)
+		}
+	}, [isAuthenticated])
+
+	if (!isMounted || isLoadingState)
+		return (
+			<div className="flex h-screen items-center justify-center">
+				<Spinner />
+			</div>
+		)
 
 	return (
 		<div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary/20 to-dark-primary/20">
