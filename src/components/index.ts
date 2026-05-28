@@ -1,4 +1,6 @@
 export * from './header'
 export * from './other'
+export * from './input'
+export * from './spinner'
 export * from './product-list'
 export * from './hero/HeroBlock'
